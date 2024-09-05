@@ -33,7 +33,7 @@ CREATE TABLE "sessions" (
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
     "name" TEXT,
-    "roles" "Role"[] DEFAULT ARRAY['USER']::"Role"[],
+    "role" "Role" NOT NULL DEFAULT 'USER',
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "email" TEXT,
     "email_verified" TIMESTAMP(3),
