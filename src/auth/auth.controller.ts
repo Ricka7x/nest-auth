@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
+import { GithubAuthGuard } from './guards/github-auth.guard';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
@@ -43,6 +44,19 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
   googleAuthRedirect(@Request() req) {
+    return req.user;
+  }
+
+  @Get('github')
+  @UseGuards(GithubAuthGuard)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async githubAuth(@Request() req) {
+    // This route will redirect to Google for authentication
+  }
+
+  @Get('github/callback')
+  @UseGuards(GithubAuthGuard)
+  githubAuthRedirect(@Request() req) {
     return req.user;
   }
 }
