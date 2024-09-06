@@ -10,14 +10,14 @@ import { AuthService } from '../auth.service';
 export class GitHubStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly usersService: UsersService,
-    private readonly configService: ConfigService,
+    private readonly config: ConfigService,
     private readonly accountsService: AccountsService,
     private readonly authService: AuthService, // Inject TokenService
   ) {
     super({
-      clientID: configService.get('GITHUB_CLIENT_ID'),
-      clientSecret: configService.get('GITHUB_CLIENT_SECRET'),
-      callbackURL: configService.get('GITHUB_CALLBACK_URL'),
+      clientID: config.get('GITHUB_CLIENT_ID'),
+      clientSecret: config.get('GITHUB_CLIENT_SECRET'),
+      callbackURL: config.get('GITHUB_CALLBACK_URL'),
       scope: ['user:email'], // Request additional scopes if needed
     });
   }

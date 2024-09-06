@@ -15,7 +15,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwtService: JwtService,
     private emailService: EmailService,
-    private configService: ConfigService,
+    private config: ConfigService,
   ) {}
 
   async generateJwt(user: any) {
@@ -85,7 +85,7 @@ export class AuthService {
       },
     });
 
-    const appUrl = this.configService.get('APP_URL');
+    const appUrl = this.config.get('APP_URL');
 
     const emailBody = `
     
@@ -96,54 +96,5 @@ export class AuthService {
     const subject = 'Email Verification Link';
 
     await this.emailService.sendEmail(email, emailBody, subject);
-  }
-
-  async verifyMagicLink(token: string) {
-    const verificationToken =
-      await this.prisma.verificationToken.findUniqueOrThrow({
-        where: { token },
-      });
-
-    console.log('Verification token found', verificationToken);
-
-    // if (!verificationToken || verificationToken.expires < new Date()) {
-    //   throw new Error('Invalid or expired token');
-    // }
-
-    // let user = await this.prisma.user.findUnique({
-    //   where: { email: verificationToken.identifier },
-    // });
-
-    // if (!user) {
-    //   user = await this.prisma.user.create({
-    //     data: {
-    //       email: verificationToken.identifier,
-    //       emailVerified: new Date(),
-    //     },
-    //   });
-
-    //   await this.prisma.account.create({
-    //     data: {
-    //       userId: user.id,
-    //       type: 'email',
-    //       provider: 'email',
-    //       providerAccountId: verificationToken.identifier,
-    //     },
-    //   });
-    // } else if (!user.emailVerified) {
-    //   user = await this.prisma.user.update({
-    //     where: { id: user.id },
-    //     data: { emailVerified: new Date() },
-    //   });
-    // }
-
-    // await this.prisma.verificationToken.delete({ where: { token } });
-
-    // const accessToken = this.jwtService.sign({
-    //   userId: user.id,
-    //   email: user.email,
-    // });
-
-    // return { user, accessToken };
   }
 }

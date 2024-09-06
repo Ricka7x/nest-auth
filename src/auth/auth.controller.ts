@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   Post,
-  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -45,7 +44,7 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
-  googleAuthRedirect(@Request() req) {
+  googleAuthCallback(@Request() req) {
     return req.user;
   }
 
@@ -58,7 +57,7 @@ export class AuthController {
 
   @Get('github/callback')
   @UseGuards(GithubAuthGuard)
-  githubAuthRedirect(@Request() req) {
+  githubAuthCallback(@Request() req) {
     return req.user;
   }
 
@@ -70,7 +69,7 @@ export class AuthController {
 
   @Get('email-magic-link/verify')
   @UseGuards(EmailMagicLinkGuard)
-  async magicLinkVerify(@Request() req) {
+  async magicLinkAuthVerify(@Request() req) {
     return req.user;
   }
 }
