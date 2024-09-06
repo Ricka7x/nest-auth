@@ -17,7 +17,7 @@ type PrismaModels = keyof Omit<
 export class BaseCrudService<T extends Record<string, any>> {
   constructor(
     protected readonly prisma: PrismaService,
-    private readonly model: PrismaModels
+    private readonly model: PrismaModels,
   ) {}
 
   async create(data: Partial<T>): Promise<T> {

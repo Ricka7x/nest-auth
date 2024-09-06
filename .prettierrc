@@ -1,4 +1,26 @@
 {
+  "endOfLine": "lf",
+  "semi": true,
   "singleQuote": true,
-  "trailingComma": "all"
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "importOrder": [
+    "^(fs|path|http|https|url|util|crypto|os)(/.*|$)", 
+    "^@nestjs/(.*)$", 
+    "<THIRD_PARTY_MODULES>", 
+    "^@/modules/(.*)$", 
+    "^@/services/(.*)$",
+    "^@/repositories/(.*)$",
+    "^@/controllers/(.*)$",
+    "^@/dto/(.*)$",
+    "^@/common/(.*)$",
+    "^[./]" 
+  ],
+  "importOrderSeparation": false,
+  "importOrderSortSpecifiers": true,
+  "importOrderBuiltinModulesToTop": true,
+  "importOrderParserPlugins": ["typescript", "decorators-legacy"],
+  "importOrderMergeDuplicateImports": true,
+  "importOrderCombineTypeAndValueImports": true,
+  "plugins": ["@ianvs/prettier-plugin-sort-imports"]
 }

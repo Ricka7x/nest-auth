@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
-import { PrismaService } from 'src/prisma.service';
-import * as bcrypt from 'bcryptjs';
-import { SignupDto } from './dto/signup.dto';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcryptjs';
+import { PrismaService } from 'src/prisma.service';
+import { UsersService } from '../users/users.service';
+import { SignupDto } from './dto/signup.dto';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -50,6 +51,7 @@ export class AuthService {
     const user = await this.usersService.findOneByEmail(email);
 
     if (user && (await bcrypt.compare(password, user.password))) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user;
       return result;
     }
