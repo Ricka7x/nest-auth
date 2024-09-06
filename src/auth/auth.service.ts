@@ -13,6 +13,13 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  async generateJwt(user: any) {
+    const payload = { id: user.id, email: user.email };
+    return {
+      jwt: this.jwtService.sign(payload),
+    };
+  }
+
   async register(signupDto: SignupDto) {
     const { email, password, name } = signupDto;
 
@@ -42,13 +49,14 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { email: user.email, sub: user.id };
+    const jwt = this.generateJwt(user);
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: jwt,
     };
   }
+
   async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.usersService.findOneByEmail(email);
+    const user = await this.usersService.findByEmail(email);
 
     if (user && (await bcrypt.compare(password, user.password))) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
