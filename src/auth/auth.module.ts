@@ -4,11 +4,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AccountsModule } from 'src/accounts/accounts.module';
 import { AccountsService } from 'src/accounts/accounts.service';
+import { EmailService } from 'src/email.service';
 import { PrismaService } from 'src/prisma.service';
 import { UsersModule } from 'src/users/users.module';
 import { UsersService } from './../users/users.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { EmailMagicLinkStrategy } from './strategies/email-magic-link.strategy';
 import { GitHubStrategy } from './strategies/github.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -37,6 +39,8 @@ import { LocalStrategy } from './strategies/local.strategy';
     JwtStrategy,
     GoogleStrategy,
     GitHubStrategy,
+    EmailMagicLinkStrategy,
+    EmailService,
   ],
   exports: [AuthService],
 })

@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
+import { EmailService } from 'src/email.service';
 import { PrismaService } from 'src/prisma.service';
+import { v4 as uuidv4 } from 'uuid';
 import { UsersService } from '../users/users.service';
 import { SignupDto } from './dto/signup.dto';
 
@@ -11,6 +14,8 @@ export class AuthService {
     private usersService: UsersService,
     private prisma: PrismaService,
     private jwtService: JwtService,
+    private emailService: EmailService,
+    private configService: ConfigService,
   ) {}
 
   async generateJwt(user: any) {
@@ -64,5 +69,81 @@ export class AuthService {
       return result;
     }
     return null;
+  }
+
+  async sendMagicLink(email: string) {
+    const token = uuidv4();
+
+    const expires = new Date(Date.now() + 3600000); // 1 hour from now
+    console.log({ token, email, expires });
+
+    const verificationToken = await this.prisma.verificationToken.create({
+      data: {
+        identifier: email,
+        token,
+        expires,
+      },
+    });
+
+    const appUrl = this.configService.get('APP_URL');
+
+    const emailBody = `
+    
+    Click to verify your account
+
+    ${appUrl}/auth/email-magic-link/verify?token=${verificationToken.token}
+    `;
+    const subject = 'Email Verification Link';
+
+    await this.emailService.sendEmail(email, emailBody, subject);
+  }
+
+  async verifyMagicLink(token: string) {
+    const verificationToken =
+      await this.prisma.verificationToken.findUniqueOrThrow({
+        where: { token },
+      });
+
+    console.log('Verification token found', verificationToken);
+
+    // if (!verificationToken || verificationToken.expires < new Date()) {
+    //   throw new Error('Invalid or expired token');
+    // }
+
+    // let user = await this.prisma.user.findUnique({
+    //   where: { email: verificationToken.identifier },
+    // });
+
+    // if (!user) {
+    //   user = await this.prisma.user.create({
+    //     data: {
+    //       email: verificationToken.identifier,
+    //       emailVerified: new Date(),
+    //     },
+    //   });
+
+    //   await this.prisma.account.create({
+    //     data: {
+    //       userId: user.id,
+    //       type: 'email',
+    //       provider: 'email',
+    //       providerAccountId: verificationToken.identifier,
+    //     },
+    //   });
+    // } else if (!user.emailVerified) {
+    //   user = await this.prisma.user.update({
+    //     where: { id: user.id },
+    //     data: { emailVerified: new Date() },
+    //   });
+    // }
+
+    // await this.prisma.verificationToken.delete({ where: { token } });
+
+    // const accessToken = this.jwtService.sign({
+    //   userId: user.id,
+    //   email: user.email,
+    // });
+
+    // return { user, accessToken };
   }
 }

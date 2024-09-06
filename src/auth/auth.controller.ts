@@ -3,11 +3,13 @@ import {
   Controller,
   Get,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
+import { EmailMagicLinkGuard } from './guards/email-magic-link.guard';
 import { GithubAuthGuard } from './guards/github-auth.guard';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -57,6 +59,18 @@ export class AuthController {
   @Get('github/callback')
   @UseGuards(GithubAuthGuard)
   githubAuthRedirect(@Request() req) {
+    return req.user;
+  }
+
+  @Post('email-magic-link')
+  async magicLinkAuth(@Body('email') email: string) {
+    await this.authService.sendMagicLink(email);
+    return { message: 'Magic link sent to your email' };
+  }
+
+  @Get('email-magic-link/verify')
+  @UseGuards(EmailMagicLinkGuard)
+  async magicLinkVerify(@Request() req) {
     return req.user;
   }
 }
