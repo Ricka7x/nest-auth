@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AccountsModule } from './accounts/accounts.module';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
+import { SubscriptionModule } from './subscription/subscription.module';
 import { UsersModule } from './users/users.module';
 import { VerificationTokenModule } from './verification-token/verification-token.module';
 
@@ -15,6 +16,7 @@ import { VerificationTokenModule } from './verification-token/verification-token
     UsersModule,
     AccountsModule,
     VerificationTokenModule,
+    SubscriptionModule,
   ],
   controllers: [AppController],
   providers: [],
