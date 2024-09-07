@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AccountsModule } from './accounts/accounts.module';
+import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { VerificationTokenModule } from './verification-token/verification-token.module';
@@ -15,7 +16,7 @@ import { VerificationTokenModule } from './verification-token/verification-token
     AccountsModule,
     VerificationTokenModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 export class AppModule {}

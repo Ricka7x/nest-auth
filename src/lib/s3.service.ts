@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   DeleteObjectCommand,
-  GetObjectCommand,
+  // GetObjectCommand,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
@@ -50,30 +50,30 @@ export class S3Service {
     }
   }
 
-  /**
-   * Gets a file from S3 by its key
-   * @param key - The key of the file in the S3 bucket
-   * @returns A stream of the file content
-   */
-  async getFile(key: string): Promise<Buffer> {
-    const command = new GetObjectCommand({
-      Bucket: this.bucketName,
-      Key: key,
-    });
+  // /**
+  //  * Gets a file from S3 by its key
+  //  * @param key - The key of the file in the S3 bucket
+  //  * @returns A stream of the file content
+  //  */
+  // async getFile(key: string): Promise<Buffer> {
+  //   const command = new GetObjectCommand({
+  //     Bucket: this.bucketName,
+  //     Key: key,
+  //   });
 
-    try {
-      const response = await this.s3Client.send(command);
-      return new Promise((resolve, reject) => {
-        const chunks = [];
-        response.Body.on('data', (chunk) => chunks.push(chunk));
-        response.Body.on('end', () => resolve(Buffer.concat(chunks)));
-        response.Body.on('error', reject);
-      });
-    } catch (error) {
-      this.logger.error('Error retrieving file:', error);
-      throw error;
-    }
-  }
+  //   try {
+  //     const response = await this.s3Client.send(command);
+  //     return new Promise((resolve, reject) => {
+  //       const chunks = [];
+  //       response.Body.on('data', (chunk) => chunks.push(chunk));
+  //       response.Body.on('end', () => resolve(Buffer.concat(chunks)));
+  //       response.Body.on('error', reject);
+  //     });
+  //   } catch (error) {
+  //     this.logger.error('Error retrieving file:', error);
+  //     throw error;
+  //   }
+  // }
 
   /**
    * Deletes a file from S3 by its key
