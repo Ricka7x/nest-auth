@@ -19,7 +19,7 @@ export class StripeWebhookController {
 
     try {
       const event = this.stripeService.constructEventFromPayload(
-        req.rawBody,
+        req.rawBody.toString('utf8'),
         signature,
       );
 

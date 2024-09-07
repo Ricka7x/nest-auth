@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { EmailService } from '../email/email-service.interface';
 import { PrismaService } from '../prisma.service';
 import { StripeService } from '../stripe/stripe.service';
 
@@ -7,6 +8,7 @@ export class SubscriptionService {
   constructor(
     private readonly stripeService: StripeService,
     private readonly prisma: PrismaService,
+    @Inject('EmailService') private readonly emailService: EmailService,
   ) {}
 
   async createSubscription(userId: string, priceId: string) {
@@ -48,6 +50,13 @@ export class SubscriptionService {
       },
     });
 
+    // Send a subscription confirmation email
+    await this.emailService.sendEmail(
+      user.email,
+      'Subscription Confirmation',
+      `Thank you for subscribing! Your subscription is now active.`,
+    );
+
     return subscription;
   }
 
@@ -71,6 +80,13 @@ export class SubscriptionService {
         subscriptionStatus: canceledSubscription.status,
       },
     });
+
+    // Send a subscription cancellation email
+    await this.emailService.sendEmail(
+      user.email,
+      'Subscription Cancelled',
+      `Your subscription has been cancelled. We're sorry to see you go!`,
+    );
 
     return canceledSubscription;
   }
@@ -125,6 +141,13 @@ export class SubscriptionService {
       },
     });
 
+    // Send a subscription change confirmation email
+    await this.emailService.sendEmail(
+      user.email,
+      'Subscription Updated',
+      `Your subscription has been updated. The changes will be reflected in your next billing cycle.`,
+    );
+
     return updatedSubscription;
   }
 
@@ -148,6 +171,13 @@ export class SubscriptionService {
         stripeCurrentPeriodEnd: currentPeriodEnd,
       },
     });
+
+    // Send an email notification about the subscription status change
+    await this.emailService.sendEmail(
+      user.email,
+      'Subscription Status Update',
+      `Your subscription status has been updated to: ${status}.`,
+    );
   }
 
   async handleSuccessfulPayment(invoice: any) {
@@ -163,6 +193,13 @@ export class SubscriptionService {
           lastPaymentDate: new Date(),
         },
       });
+
+      // Send a payment success email
+      await this.emailService.sendEmail(
+        user.email,
+        'Payment Successful',
+        `Your payment of $${invoice.amount_paid / 100} has been successfully processed. Thank you for your subscription!`,
+      );
     }
   }
 
@@ -180,7 +217,12 @@ export class SubscriptionService {
         },
       });
 
-      // TODO: Implement notification logic (e.g., send an email to the user)
+      // Send a payment failed email
+      await this.emailService.sendEmail(
+        user.email,
+        'Payment Failed',
+        `We were unable to process your payment of $${invoice.amount_due / 100}. Please update your payment method to continue your subscription.`,
+      );
     }
   }
 
@@ -206,17 +248,12 @@ export class SubscriptionService {
     };
   }
 
-  // Restoring previously existing methods
-
   async handleWebhook(body: any) {
-    // Implement webhook handling logic
-    // This might involve updating subscription status, handling payment events, etc.
     console.log('Received webhook:', body);
     // Add your webhook handling logic here
   }
 
   async getSubscriptionPrices() {
-    // Fetch and return subscription prices from Stripe
     return this.stripeService.getSubscriptionPrices();
   }
 
