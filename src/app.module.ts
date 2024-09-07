@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AccountsModule } from './accounts/accounts.module';
-import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { SubscriptionModule } from './subscription/subscription.module';
 import { UploadModule } from './upload/upload.module';
@@ -20,7 +19,7 @@ import { VerificationTokenModule } from './verification-token/verification-token
     SubscriptionModule,
     UploadModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [],
 })
 export class AppModule {}
